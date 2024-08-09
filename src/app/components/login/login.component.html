@@ -1,1 +1,70 @@
-<p>login works!</p>
+<div class="container py-3">
+  <div class="card mx-auto mt-5">
+    <div class="card-body">
+      <h4 class="card-title mb-4">Login</h4>
+      <form [formGroup]="loginform">
+        <div class="mb-3">
+          <label for="Email" class="form-label">*Email address</label>
+          <input
+            type="email"
+            class="form-control"
+            id="Email"
+            formControlName="email"
+          />
+          <small *ngIf="loginform.invalid && isSubmitted" class="text-danger">
+            <span
+              *ngIf="
+                loginform.controls['email'].errors &&
+                loginform.controls['email'].errors['required']
+              "
+              >Email is required</span
+            >
+            <span
+              *ngIf="
+                loginform.controls['email'].errors &&
+                loginform.controls['email'].errors['email']
+              "
+              >Enter a valid email</span
+            >
+          </small>
+        </div>
+        <div class="mb-3">
+          <label for="Password" class="form-label">*Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="Password"
+            formControlName="password"
+          />
+          <small *ngIf="loginform.invalid && isSubmitted" class="text-danger">
+            <span
+              *ngIf="
+                loginform.controls['password'].errors &&
+                loginform.controls['password'].errors['required']
+              "
+              >Password is required</span
+            >
+          </small>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-warning" (click)="onLogin()">
+            Login
+          </button>
+        </div>
+
+        <div class="d-grid" *ngIf="isSubmitted && authError">
+          <small class="text-danger">{{authMessage}}</small>
+        </div>
+      </form>
+
+      <div class="mt-3">
+        <p>
+          Already have an account?
+          <a href="signup" routerLink="../signup">Signup</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+

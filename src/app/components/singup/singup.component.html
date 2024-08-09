@@ -1,1 +1,78 @@
-<p>singup works!</p>
+<div class="container py-3">
+  <div class="card mx-auto mt-5">
+    <div class="card-body">
+      <h4 class="card-title mb-4">Sign-Up</h4>
+      <form [formGroup]="signupform">
+        <div class="mb-3">
+          <label for="Email" class="form-label">*Email address</label>
+          <input
+            type="email"
+            class="form-control"
+            id="Email"
+            formControlName="email"
+          />
+          <small *ngIf="signupform.invalid && isSubmitted" class="text-danger">
+            <span
+              *ngIf="
+                signupform.controls['email'].errors &&
+                signupform.controls['email'].errors['required']
+              "
+              >Email is required</span
+            >
+            <span
+              *ngIf="
+                signupform.controls['email'].errors &&
+                signupform.controls['email'].errors['email']
+              "
+              >Enter a valid email</span
+            >
+          </small>
+        </div>
+        <div class="mb-3">
+          <label for="Password" class="form-label">*Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="Password"
+            formControlName="password"
+          />
+          <small *ngIf="signupform.invalid && isSubmitted" class="text-danger">
+            <span
+              *ngIf="
+                signupform.controls['password'].errors &&
+                signupform.controls['password'].errors['required']
+              "
+              >Password is required</span
+            >
+          </small>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-warning" (click)="onSignUp()">
+            Sign Up
+          </button>
+        </div>
+
+        <div class="d-grid" *ngIf="isSubmitted && authError">
+          <small class="text-danger">{{ authMessage }}</small>
+        </div>
+      </form>
+
+      <div class="mt-3">
+        <p>
+          Already have an account?
+          <a href="login" routerLink="../login">Login</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="toast-container position-absolute top-0 end-0 p-3"
+  id="toastPlacement"
+>
+  <div class="toast bg-success">
+    <div class="toast-body">Signup Successfull!!!</div>
+  </div>
+</div>

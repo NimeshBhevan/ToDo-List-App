@@ -1,1 +1,133 @@
-<p>task works!</p>
+
+<div class="container">
+  <div class="card mx-auto" style="width: 18rem">
+    <div class="card-body">
+      <div class="d-grid gap-2">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          + Task
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="!editmode">New Task</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel" *ngIf="editmode">Edit Task</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            (click)="close()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="taskform">
+            <div class="mb-3">
+              <label for="title" class="col-form-label">Title:</label>
+              <input type="text" class="form-control" id="title" formControlName="title"/>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="col-form-label"
+                >Description:</label
+              >
+              <textarea class="form-control" id="description" formControlName="description"></textarea>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="flexCheckDefault"
+                formControlName="done"
+              />
+              <label class="form-check-label" for="flexCheckDefault">
+                Task Done
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="close()"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" (click)="addTask()" data-bs-dismiss="modal" *ngIf="!editmode">
+            Submit
+          </button>
+          <button type="button" class="btn btn-primary" (click)="updateTask()" data-bs-dismiss="modal" *ngIf="editmode">
+            Update
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>title</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Remarks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of taskList; let i = index" [ngClass]="{'done': task.done}">
+          <td>{{task.id}}</td>
+          <td>{{task.title}}</td>
+          <td>{{task.description}}</td>
+          <td>{{task.date}}</td>
+          <td>{{task.done}}</td>
+
+          <td>
+            <!-- Add Edit and Delete button -->
+             <button class="btn btn-danger m-1" (click)="deleteTask(task.id)"><i class="bi bi-trash"></i></button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editTask(task)"><i class="bi bi-pencil"></i></button> 
+            
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card mx-auto" style="width: 18rem">
+    <div class="card-body">
+      <div class="d-grid gap-2">
+        <button
+          type="button"
+          class="btn btn-primary" (click)="logout()"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
