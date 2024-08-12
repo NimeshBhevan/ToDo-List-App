@@ -1,12 +1,7 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { Task } from 'src/app/models/task';
 import { LocalstorageService } from 'src/app/services/localstorage.service';
 import { TaskService } from 'src/app/services/task.service';
@@ -17,12 +12,11 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./task.component.css'],
 })
 export class TaskComponent implements OnInit, OnDestroy {
-  // @ViewChild('exampleModal')
-  // exampleModal!: ElementRef;
   taskform: FormGroup = new FormGroup({});
   taskList: Task[] = [];
   editmode: boolean = false;
   task_id: string | undefined = '';
+  endsubscribe$: Subject<any> = new Subject();
 
   constructor(
     private fb: FormBuilder,
@@ -41,30 +35,23 @@ export class TaskComponent implements OnInit, OnDestroy {
     this.getTask();
   }
 
-  // ngAfterViewInit(): void {
-  //   setTimeout(() => {
-  //     if (this.exampleModal) {
-  //       this.exampleModal.nativeElement.addEventListener(
-  //         'hidden.bs.modal',
-  //         () => {
-  //           this.resetform(), (this.editmode = false);
-  //         }
-  //       );
-  //     }
-
-  //   }, 0)
-
-  // }
-
-  ngOnDestroy(): void {}
-  // POST method
-  addTask() {
-    this.task.newTask(this.taskform.value).subscribe(() => {
-      this.resetform();
-      this.getTask();
-    });
+  ngOnDestroy(): void {
+     this.endsubscribe$.next(undefined);
+     this.endsubscribe$.complete();
   }
 
+  // POST method
+  addTask() {
+    this.task
+      .newTask(this.taskform.value)
+      .pipe(takeUntil(this.endsubscribe$))
+      .subscribe(() => {
+        this.resetform();
+        this.getTask();
+      });
+  }
+
+  // PUT method
   editTask(task: Task) {
     this.editmode = true;
     this.task_id = task.id;
@@ -85,31 +72,41 @@ export class TaskComponent implements OnInit, OnDestroy {
       date: this.taskform.controls['date'].value,
     };
 
-    this.task.updateTask(todoTask).subscribe(() => {
-      this.task_id = '';
-      this.resetform();
-      this.getTask();
-    });
+    this.task
+      .updateTask(todoTask)
+      .pipe(takeUntil(this.endsubscribe$))
+      .subscribe(() => {
+        this.task_id = '';
+        this.resetform();
+        this.getTask();
+      });
   }
 
   // GET method
   private getTask() {
-    this.task.getTask().subscribe((response) => {
-      return (this.taskList = response);
-    });
+    this.task
+      .getTask()
+      .pipe(takeUntil(this.endsubscribe$))
+      .subscribe((response) => {
+        return (this.taskList = response);
+      });
   }
 
   // DELETE method
   deleteTask(id: any) {
-    this.task.deleteTask(id).subscribe(() => {
-      this.getTask();
-    });
+    this.task
+      .deleteTask(id)
+      .pipe(takeUntil(this.endsubscribe$))
+      .subscribe(() => {
+        this.getTask();
+      });
   }
 
   close() {
     this.resetform();
   }
-  // reset the form to its initial values after submitting it
+
+  // Resets the form to its initial values after submitting it
   private resetform() {
     this.taskform.reset({
       done: false,
