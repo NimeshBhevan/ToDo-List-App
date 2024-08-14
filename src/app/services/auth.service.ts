@@ -4,12 +4,13 @@ import { LocalstorageService } from './localstorage.service';
 import { Router } from '@angular/router';
 import { User } from '../models/user';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  api = 'http://localhost:3000/api';
+  api = environment.apiUrl;
   constructor(
     private http: HttpClient,
     private token: LocalstorageService,
